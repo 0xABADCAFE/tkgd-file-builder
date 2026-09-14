@@ -62,7 +62,17 @@ class Builder extends File\Builder {
             $oStringList
         );
 
+        $oHasher = new Common\HashFNV1A();
+
         $aChunks = [];
+
+        if (!empty($oGameProperties->DefaultGlobals)) {
+            $aChunks[] = $this->buildDefaultGlobalsChunk(
+                $oGameProperties,
+                $oStringList,
+                $oHasher
+            );
+        }
 
         if (!empty($oGameProperties->DefaultInventoryLimits)) {
             $aChunks[] = $this->buildDefaultInventoryLimitsChunk($oGameProperties, $oStringList);
@@ -113,6 +123,23 @@ class Builder extends File\Builder {
             $this->aPlayerSpecialAmmoTypes = (array)$oLinkDefs->PlayerSpecialAmmoTypes;
             printf("Got %d Player Special Ammo Types\n", count($this->aPlayerSpecialAmmoTypes));
         }
+    }
+
+
+    private function buildDefaultGlobalsChunk(
+        stdClass $oGameProperties,
+        Common\StringList $oStringList,
+        Common\HashFNV1A  $oHasher
+    ): File\Chunk {
+        echo "Processing Globals...\n";
+        return new File\Chunk(
+            Chunkable\DefaultGlobals::IDENT,
+            new Chunkable\DefaultGlobals(
+                $oGameProperties->DefaultGlobals,
+                $oStringList,
+                $oHasher
+            )
+        );
     }
 
     private function buildDefaultInventoryLimitsChunk(
