@@ -183,7 +183,7 @@ class Builder extends File\Builder {
         return new File\Chunk(
             Chunkable\AlienAdjustments::IDENT,
             new Chunkable\AlienAdjustments(
-                $this->$aAlienTypes,
+                $this->aAlienTypes,
                 $oGameProperties->AlienAdjustments
             )
         );

@@ -31,38 +31,25 @@ class AlienAdjustment implements Common\IBinaryEncodable {
         }
 
         $iScaleWidth  = (int)($oSource->ScaleWidth ?? 100);
+        $this->assertScale($iScaleWidth, 'ScaleWidth');
+
         $iScaleHeight = (int)($oSource->ScaleHeight ?? 100);
+        $this->assertScale($iScaleHeight, 'ScaleHeight');
+
         $iVertOffset  = (int)($oSource->VertOffset ?? 0);
+        $this->assertOffset($iVertOffset, 'VertOffset');
 
-        if ($iScaleWidth < self::MIN_SCALE || $iScaleWidth > self::MAX_SCALE) {
-            throw new RuntimeException(
-                sprintf(
-                    'AlienAdjustment.ScaleWidth must be between %d and %d',
-                    self::MIN_SCALE,
-                    self::MAX_SCALE
-                )
-            );
-        }
+        $iAuxXOffset    = (int)($oSource->AuxXOffset ?? 0);
+        $this->assertOffset($iAuxXOffset, 'AuxXOffset');
 
-        if ($iScaleHeight < self::MIN_SCALE || $iScaleHeight > self::MAX_SCALE) {
-            throw new RuntimeException(
-                sprintf(
-                    'AlienAdjustment.ScaleHeight must be between %d and %d',
-                    self::MIN_SCALE,
-                    self::MAX_SCALE
-                )
-            );
-        }
+        $iAuxYOffset    = (int)($oSource->AuxYOffset ?? 0);
+        $this->assertOffset($iAuxYOffset, 'AuxYOffset');
 
-        if ($iVertOffset < self::MIN_OFFSET || $iVertOffset > self::MAX_OFFSET) {
-            throw new RuntimeException(
-                sprintf(
-                    'AlienAdjustment.VertOffset must be between %d and %d',
-                    self::MIN_OFFSET,
-                    self::MAX_OFFSET
-                )
-            );
-        }
+        $iBulletXOffset = (int)($oSource->BulletXOffset ?? 0);
+        $this->assertOffset($iBulletXOffset, 'BulletXOffset');
+
+        $iBulletYOffset = (int)($oSource->BulletYOffset ?? 0);
+        $this->assertOffset($iBulletYOffset, 'BulletYOffset');
 
         $iScaleWidth  = (int)(self::SCALE_FACTOR * $iScaleWidth);
         $iScaleHeight = (int)(self::SCALE_FACTOR * $iScaleHeight);
@@ -72,11 +59,41 @@ class AlienAdjustment implements Common\IBinaryEncodable {
             $iAlienID,
             $iScaleWidth,
             $iScaleWidth,
-            $iVertOffset
+            $iVertOffset,
+            $iAuxXOffset,
+            $iAuxYOffset,
+            $iBulletXOffset,
+            $iBulletYOffset
         );
     }
 
     public function toBinary(): string {
         return $this->sPayload;
+    }
+
+    private function assertScale(int $iValue, string $sProperty): void {
+        if ($iValue < self::MIN_SCALE || $iValue > self::MAX_SCALE) {
+            throw new RuntimeException(
+                sprintf(
+                    'AlienAdjustment.%s must be between %d and %d',
+                    $sProperty,
+                    self::MIN_SCALE,
+                    self::MAX_SCALE
+                )
+            );
+        }
+    }
+
+    private function assertOffset(int $iValue, string $sProperty): void {
+        if ($iValue < self::MIN_OFFSET || $iValue > self::MAX_OFFSET) {
+            throw new RuntimeException(
+                sprintf(
+                    'AlienAdjustment.%s must be between %d and %d',
+                    $sProperty,
+                    self::MIN_OFFSET,
+                    self::MAX_OFFSET
+                )
+            );
+        }
     }
 }
