@@ -82,6 +82,10 @@ class Builder extends File\Builder {
             $aChunks[] = $this->buildSpecialAmmoBonusesChunk($oGameProperties, $oRewardList);
         }
 
+        if (!empty($oGameProperties->AlienAdjustments)) {
+            $aChunks[] = $this->buildAlienAdjustmentsChunk($oGameProperties);
+        }
+
         if (!empty($oGameProperties->WeaponAdjustments)) {
             $aChunks[] = $this->buildWeaponAdjustmentsChunk($oGameProperties);
         }
@@ -171,6 +175,20 @@ class Builder extends File\Builder {
             )
         );
     }
+
+    private function buildAlienAdjustmentsChunk(
+        stdClass $oGameProperties
+    ): File\Chunk {
+        echo "Processing Alien Adjustments...\n";
+        return new File\Chunk(
+            Chunkable\AlienAdjustments::IDENT,
+            new Chunkable\AlienAdjustments(
+                $this->aAlienTypes,
+                $oGameProperties->AlienAdjustments
+            )
+        );
+    }
+
 
     private function buildWeaponAdjustmentsChunk(
         stdClass $oGameProperties
